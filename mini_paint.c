@@ -19,7 +19,6 @@ typedef struct t_data
 	float triangle_x;
 	float triangle_y;
 	float triangle_hypotenusa;
-
 } t_data;
 
 void calc_dist_from_center(t_data *d)
@@ -47,40 +46,23 @@ int main(int argc, char *argv[])
 	
 	if (argc != 2)
 		return (1);
+	d.arr = NULL;
 	d.fd = fopen(argv[1], "r");
 	ret_scanf = fscanf(d.fd, "%d   %d %c  \n", &d.width, &d.height, &d.bckg_char);
 	if (ret_scanf != 3)
-	{
-		printf("Error: Operation file corrupted\n");
-		fclose(d.fd);
-		return (1);
-	}
+		free_and_exit(&d, 1);
 	if (d.width > 300 || d.width < 1|| d.height > 300 || d.height < 1)
-	{
-		printf("Error: Operation file corrupted\n");
-		fclose(d.fd);
-		return (1);
-	}
+		free_and_exit(&d, 1);
 	d.arr = calloc(d.width * d.height, sizeof(char));
 	if (d.arr == NULL)
-	{
-		printf("Error: Operation file corrupted\n");
-		fclose(d.fd);
-		return (1);
-	}
+		free_and_exit(&d, 1);
 	while ((ret_scanf = fscanf(d.fd, "%c %f  %f %f %c  \n", &d.circle_type, &d.center_x, &d.center_y,
 		&d.radius, &d.circle_char)) == 5)
 	{
 		if (d.circle_type != 'c' && d.circle_type != 'C')
-		{
-			printf("Error: Operation file corrupted\n");
-			return (1);
-		}
+			free_and_exit(&d, 1);
 		if (d.radius <= -0)
-		{
-			printf("Error: Operation file corrupted\n");
-			return (1);
-		}
+			free_and_exit(&d, 1);
 		d.field_y = 0;
 		i = 0;
 		while (d.field_y < d.height)
@@ -106,10 +88,7 @@ int main(int argc, char *argv[])
 		}
 	}
 	if (ret_scanf != 5 && ret_scanf != -1)
-	{
-		printf("Error: Operation file corrupted\n");
-		return (1);
-	}
+		free_and_exit(&d, 1);
 	i = 0;
 	d.field_y = 0;
 	while (d.field_y < d.height)
@@ -128,7 +107,6 @@ int main(int argc, char *argv[])
 	}
 	fclose(d.fd);
 	free(d.arr);
-	//return (0);
 	exit(0);
 }
 

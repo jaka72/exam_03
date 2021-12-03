@@ -18,7 +18,7 @@ do
 		sleep .01
 		./_our_mini_paint example_ > coutput 2>&1
 		our_res=$?
-		./_mini_paint example_ > output 2>&1
+		valgrind ./_mini_paint example_ > output 2>&1
 		bad_res=$?
 		if [ $our_res -ne $bad_res ]
 		then
