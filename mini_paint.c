@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include <math.h>
 
+/*
+	PRINTF NOT ALLOWED! USE write()
+*/
+
+
 typedef struct t_data
 {
 	FILE *fd;
@@ -109,4 +114,3 @@ int main(int argc, char *argv[])
 	free(d.arr);
 	exit(0);
 }
-

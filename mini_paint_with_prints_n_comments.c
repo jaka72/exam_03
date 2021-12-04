@@ -3,6 +3,7 @@
 #include <math.h>
 
 /*
+PRINTF NOT ALLOWED!
 	Apparently not needed to check for scan_ret -1, it never happens.
 
 

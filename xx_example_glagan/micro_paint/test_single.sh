@@ -1,24 +1,36 @@
 #!/bin/bash
+
+# CHECK THE PATH OF YOUR TEST FILE
+#TEST_FILE=../../map_5x3.txt
+TEST_FILE=example_
+
+# CHECK THE PATH OF YOUR micro_paint.c
+MICRO_PAINT=../../micro_paint.c
+
 echo "> start"
 echo "$ compile"
-rm -f _mini_paint* _our_mini_paint* _gen*
-gcc -Wall -Wextra -Werror mini_paint.c -lm  -o _mini_paint
-gcc -Wall -Wextra -Werror our_mini_paint.c -lm  -o _our_mini_paint
+rm -f _micro_paint* _gen*
+gcc -Wall -Wextra -Werror $MICRO_PAINT -lm -o _micro_paint
+gcc -Wall -Wextra -Werror our_micro_paint.c -lm -o _our_micro_paint
 g++ -Wall -Wextra -Werror generate_example.cpp -lm -o _gen
 echo "$ test"
 counter=1
 max=2
+i=0
 our_res=-1
 bad_res=-1
-while [ $counter -le $max ]
+#while [ $counter -le $max ]
+while (( $i < 1 ))
 do
-	./_gen
+	#./_gen
 	if [ $? ]
 	then
 		sleep .01
-		./_our_mini_paint example_ > coutput 2>&1
+		#./_our_micro_paint example_ > coutput 2>&1
+		./_our_micro_paint  $TEST_FILE > coutput 2>&1
 		our_res=$?
-		./_mini_paint example_ > output 2>&1
+		#./_micro_paint example_ > output 2>&1
+		./_micro_paint  $TEST_FILE  > output 2>&1
 		bad_res=$?
 		if [ $our_res -ne $bad_res ]
 		then
@@ -42,8 +54,9 @@ do
 			printf "\e[1;32m$our_res\e[0m"
 		fi
 	fi
-	max=$((max + 1))
-	counter=$((counter + 1))
+	#max=$((max + 1))
+	#counter=$((counter + 1))
+	i=$(( i+1 ))
 done
-rm -f _mini_paint* _our_mini_paint* _gen* example_* output coutput
+#rm -rf _gen* _micro_paint* _our_micro_paint* example_* output coutput
 printf "\n> done"
