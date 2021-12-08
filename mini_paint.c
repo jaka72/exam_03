@@ -5,8 +5,6 @@
 /*
 	PRINTF NOT ALLOWED! USE write()
 */
-
-
 typedef struct t_data
 {
 	FILE *fd;
@@ -56,13 +54,14 @@ int main(int argc, char *argv[])
 	ret_scanf = fscanf(d.fd, "%d   %d %c  \n", &d.width, &d.height, &d.bckg_char);
 	if (ret_scanf != 3)
 		free_and_exit(&d, 1);
-	if (d.width > 300 || d.width < 1|| d.height > 300 || d.height < 1)
+	if (d.width > 300 || d.width < 0|| d.height > 300 || d.height < 0)
 		free_and_exit(&d, 1);
 	d.arr = calloc(d.width * d.height, sizeof(char));
 	if (d.arr == NULL)
 		free_and_exit(&d, 1);
-	while ((ret_scanf = fscanf(d.fd, "%c %f  %f %f %c  \n", &d.circle_type, &d.center_x, &d.center_y,
-		&d.radius, &d.circle_char)) == 5)
+
+	while ((ret_scanf = fscanf(d.fd, "%c %f  %f %f %c  \n",
+		&d.circle_type, &d.center_x, &d.center_y, &d.radius, &d.circle_char)) == 5)
 	{
 		if (d.circle_type != 'c' && d.circle_type != 'C')
 			free_and_exit(&d, 1);

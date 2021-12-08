@@ -24,14 +24,14 @@ typedef struct t_data
 	char bckg_char;
 	char rect_char;
 	char rect_type;
-	float fcx;
-	float fcy;
-	float rtlx;
-	float rtly;
-	float rbrx;
-	float rbry;
-	float rwidth;
-	float rheight;
+	float point_x;
+	float point_y;
+	float rect_xtl;
+	float rect_ytl;
+	float rect_xbr;
+	float rect_ybr;
+	float rect_width;
+	float rect_height;
 } t_data;
 
 int ft_strlen(char *str)
@@ -50,8 +50,8 @@ void ft_putstr(char *str)
 
 void get_bottom_right_point(t_data *d)
 {
-	d->rbrx = d->rtlx + d->rwidth;
-	d->rbry = d->rtly + d->rheight;
+	d->rect_xbr = d->rect_xtl + d->rect_width;
+	d->rect_ybr = d->rect_ytl + d->rect_height;
 }
 
 void free_and_exit(t_data *d, int exitcode)
@@ -66,7 +66,7 @@ void free_and_exit(t_data *d, int exitcode)
 	exit(exitcode);
 }
 
-int check_if_one(float rect_point, float rect_size)
+int line_is_atleast_one(float rect_point, float rect_size)
 {
 	if (rect_size > 0. && rect_size < 1.)
 	{
@@ -98,14 +98,14 @@ int main(int argc, char *argv[])
 	ret_scanf = fscanf(d.fd, "%d   %d %c  \n", &d.width, &d.height, &d.bckg_char);
 	if (ret_scanf != 3)
 		free_and_exit(&d, 1);
-	if (d.width > 300 || d.width < 0|| d.height > 300 || d.height < 0)
+	if (d.width > 300 || d.width < 1|| d.height > 300 || d.height < 1)
 		free_and_exit(&d, 1);
 	d.arr = calloc(d.width * d.height, sizeof(char));
 	if (d.arr == NULL)
 		free_and_exit(&d, 1);
 	while ((ret_scanf = fscanf(d.fd, "%c %f  %f %f %f %c  \n",
-		&d.rect_type, &d.rtlx, &d.rtly,
-		&d.rwidth, &d.rheight, &d.rect_char)) == 6)
+		&d.rect_type, &d.rect_xtl, &d.rect_ytl,
+		&d.rect_width, &d.rect_height, &d.rect_char)) == 6)
 	{
 		//perror("D");
 
@@ -114,45 +114,50 @@ int main(int argc, char *argv[])
 		//printf("rect char: [%c]\n", d.rect_char);
 		if (d.rect_type != 'r' && d.rect_type != 'R')
 			free_and_exit(&d, 1);
-		if (d.rwidth <= -0 || d.rheight <= -0)
+		if (d.rect_width <= -0 || d.rect_height <= -0)
 			free_and_exit(&d, 1);
-		d.fcy = 0;
+		d.point_y = 0;
 		i = 0;
-		while (d.fcy < d.height)
+		while (d.point_y < d.height)
 		{
-			d.fcx = 0;
-			while (d.fcx < d.width)
+			d.point_x = 0;
+			while (d.point_x < d.width)
 			{
 				// get_bottom_right_point(&d);
 				if (d.rect_type == 'r') // EMPTY RECT
 				{
-					if ((d.fcx >= d.rtlx && d.fcx < d.rtlx + 1 &&
-						 d.fcy >= d.rtly  && d.fcy <= d.rbry 
-						 && (check_if_one(d.rtlx, d.rwidth) == 1))
+					if ((d.point_x >= d.rect_xtl && d.point_x < d.rect_xtl + 1 &&
+						 d.point_y > d.rect_ytl  && d.point_y <= d.rect_ybr 
+						 //d.point_y >= d.rect_ytl  && d.point_y <= d.rect_ybr // also working
+						 //&& (line_is_atleast_one(d.rect_xtl, d.rect_width) == 1) ) ||
+						 && (line_is_atleast_one(d.rect_xtl, d.rect_width) == 1))
 						 ||
-						(d.fcy >= d.rtly && d.fcy < d.rtly + 1 &&
-						 d.fcx >= d.rtlx && d.fcx <= d.rbrx
-						 && (check_if_one(d.rtly, d.rheight) == 1) ))
+						(d.point_y >= d.rect_ytl && d.point_y < d.rect_ytl + 1 &&
+						 d.point_x >= d.rect_xtl && d.point_x <= d.rect_xbr
+						 //d.point_x >= d.rect_xtl && d.point_x < d.rect_xbr
+						 && (line_is_atleast_one(d.rect_ytl, d.rect_height) == 1) ))
 						d.arr[i] = d.rect_char;
+						//d.arr[i] = 'x';
 
-					if	((d.fcx <= d.rbrx && d.fcx > d.rbrx - 1 &&
-						  d.fcy <= d.rbry    && d.fcy >= d.rtly
-						  && (check_if_one(d.rtlx, d.rwidth) == 1 )) ||
-						(d.fcy <= d.rbry && d.fcy > d.rbry - 1 &&
-						 d.fcx <= d.rbrx && d.fcx >= d.rtlx
-						 && (check_if_one(d.rtly, d.rheight) == 1) ))
+					if	((d.point_x <= d.rect_xbr && d.point_x > d.rect_xbr - 1 &&
+						  d.point_y <= d.rect_ybr    && d.point_y >= d.rect_ytl
+						  && (line_is_atleast_one(d.rect_xtl, d.rect_width) == 1 )) ||
+						(d.point_y <= d.rect_ybr && d.point_y > d.rect_ybr - 1 &&
+						 //d.point_x < d.rect_xbr &&d.point_x > d.rect_xtl
+						 d.point_x <= d.rect_xbr &&d.point_x >= d.rect_xtl
+						 && (line_is_atleast_one(d.rect_ytl, d.rect_height) == 1) ))
 					 	d.arr[i] = d.rect_char;
 				}
 				else if (d.rect_type == 'R') // FILLED RECT
 				{
-					if (d.rtlx <= d.fcx && d.fcx <= d.rbrx &&
-						d.rtly <= d.fcy && d.fcy <= d.rbry)
+					if (d.rect_xtl <= d.point_x && d.point_x <= d.rect_xbr &&
+						d.rect_ytl <= d.point_y && d.point_y <= d.rect_ybr)
 						d.arr[i] = d.rect_char;
 				}
-				d.fcx++;
+				d.point_x++;
 				i++;
 			}
-			d.fcy++;
+			d.point_y++;
 		}
 	}
 	//perror("F");
@@ -164,20 +169,20 @@ int main(int argc, char *argv[])
 
 
 	i = 0;
-	d.fcy = 0;
-	while (d.fcy < d.height)
+	d.point_y = 0;
+	while (d.point_y < d.height)
 	{
-		d.fcx = 0;
-		while (d.fcx < d.width)
+		d.point_x = 0;
+		while (d.point_x < d.width)
 		{
 			if (d.arr[i] == 0)
 				d.arr[i] = d.bckg_char;
 			printf("%c", d.arr[i]);			// ISSUE !
 			//write(1, &d.arr[i], 1);
-			d.fcx++;
+			d.point_x++;
 			i++;
 		}
-		d.fcy++;
+		d.point_y++;
 		printf("\n");						// ISSUE !
 		//write(1, "\n", 1);
 		//ft_putstr("\n");

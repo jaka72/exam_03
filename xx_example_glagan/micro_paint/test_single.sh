@@ -5,7 +5,8 @@
 TEST_FILE=example_
 
 # CHECK THE PATH OF YOUR micro_paint.c
-MICRO_PAINT=../../micro_paint.c
+#MICRO_PAINT=../../micro_paint.c
+MICRO_PAINT=../../micro_vaja03.c
 
 echo "> start"
 echo "$ compile"

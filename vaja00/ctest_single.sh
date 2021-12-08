@@ -1,25 +1,26 @@
 #!/bin/bash
 echo "> start"
 echo "$ compile"
-rm -f _micro_paint* _gen*
-#gcc -Wall -Wextra -Werror ../../micro_paint.c -lm -o _micro_paint
-gcc -Wall -Wextra -Werror ../../micro_vaja03.c -lm -o _micro_paint
-gcc -Wall -Wextra -Werror our_micro_paint.c -lm -o _our_micro_paint
+rm -f _mini_paint* _our_mini_paint* _gen*
+gcc -Wall -Wextra -Werror mini_vaja01.c -lm  -o _mini_paint
+gcc -Wall -Wextra -Werror our_mini_paint.c -lm  -o _our_mini_paint
 g++ -Wall -Wextra -Werror generate_example.cpp -lm -o _gen
 echo "$ test"
 counter=1
 max=2
 our_res=-1
 bad_res=-1
-while [ $counter -le $max ]
-do
-	./_gen
+i=0
+#while [ $counter -le $max ]
+#while (( $i < 1))
+#do
+	#./_gen
 	if [ $? ]
 	then
 		sleep .01
-		./_our_micro_paint example_ > coutput 2>&1
+		./_our_mini_paint example_ > coutput 2>&1
 		our_res=$?
-		./_micro_paint example_ > output 2>&1
+		./_mini_paint example_ > output 2>&1
 		bad_res=$?
 		if [ $our_res -ne $bad_res ]
 		then
@@ -43,8 +44,8 @@ do
 			printf "\e[1;32m$our_res\e[0m"
 		fi
 	fi
-	max=$((max + 1))
-	counter=$((counter + 1))
-done
-rm -rf _gen* _micro_paint* _our_micro_paint* example_* output coutput
+	#max=$((max + 1))
+	#counter=$((counter + 1))
+#done
+#rm -f _mini_paint* _our_mini_paint* _gen* example_* output coutput
 printf "\n> done"
